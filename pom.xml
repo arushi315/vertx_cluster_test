@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <vertx.version>3.6.2</vertx.version>
+        <vertx.version>3.5.4</vertx.version>
         <commons.lang3.version>3.8.1</commons.lang3.version>
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
         <maven.shade.plugin.version>3.2.1</maven.shade.plugin.version>
