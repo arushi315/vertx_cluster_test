@@ -84,7 +84,7 @@ public class AppStarter {
                     .stream()
                     .map(member -> member.getSocketAddress().getAddress().getHostAddress())
                     .collect(Collectors.joining(","));
-            System.out.println("Retrieving cluster members " + nodesInCluster);
+            System.out.println("Active hazelcast cluster members - " + nodesInCluster);
 
             context
                     .response()
