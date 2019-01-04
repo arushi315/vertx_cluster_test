@@ -102,20 +102,14 @@ Members {size:2, ver:6} [
         Member [172.16.85.177]:5701 - 605415f3-5c98-4b99-8e30-297915312b6c this
 ]
 
-When you hit hazelcast endpoint on node 172.16.85.177, 
+When you hit hazelcast endpoint _http://localhost:8080/hazelcast_ on node 172.16.85.177, 
 Log statement ---> "Active hazelcast cluster members - 172.16.85.175,172.16.85.177"
 
 
-When you hit publish endpoint on node 172.16.85.177, 
+When you hit publish endpoint _http://localhost:8080/publish_ on node 172.16.85.177, the response should be "Sent Publish from 172.16.85.177".
+
+Log statement on node 172.16.85.177,
+"Received on host:: 172.16.85.177 ---> Hello from host:: 172.16.85.177"
 
 Log statement on node 172.16.85.175,
 "Received on host:: 172.16.85.175 ---> Hello from host:: 172.16.85.177"
-
-There no log statement on node 172.16.85.177 and the message is not consumed on node 172.16.85.177.
-
-When you hit publish endpoint on node 172.16.85.175, 
-
-Log statement on node 172.16.85.175,
-"Received on host:: 172.16.85.175 ---> Hello from host:: 172.16.85.175"
-
-There no log statement on node 172.16.85.177 and the message is not consumed on node 172.16.85.177.
