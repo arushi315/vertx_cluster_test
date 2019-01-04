@@ -1,0 +1,11 @@
+/.idea/*
+*.iml
+*.log
+*/logs
+*/target/*
+.idea/
+.vertx/
+*.DS_Store
+*/target/
+/target
+logs/
