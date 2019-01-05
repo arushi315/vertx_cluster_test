@@ -46,7 +46,7 @@ Active hazelcast cluster members - 172.16.85.175,172.16.85.177
 
 1. Spin up 2 nodes in cluster. 
 
-Lets take two nodes with address 172.16.85.175 and 172.16.85.177
+Let's take two nodes with address 172.16.85.175 and 172.16.85.177
 Run command on both nodes, 
 java -jar -Dcluster.members=172.16.85.175,172.16.85.177 vertx-cluster-test.jar
 
@@ -63,7 +63,7 @@ Access endpoint _http://localhost:8080/hazelcast_ on any node, the response shou
  
 Log statement ---> "Active hazelcast cluster members - 172.16.85.175,172.16.85.177"
 
-3. Validate that the published message on vertx eventbus is recieved by all nodes. 
+3. Validate that the published message on vertx eventbus is received by all nodes. 
 
 When you hit endpoint _http://localhost:8080/publish_ on node 172.16.85.177, the response should be "Sent Publish from 172.16.85.177".
 
