@@ -37,12 +37,13 @@ Received on host:: 172.16.85.177 ---> Hello from host:: 172.16.85.177
 _Hazelcast endpoint:_ Retrieves all the active hazelcast cluster members.
 
 For instance, 
-Retrieving cluster members 172.16.85.175,172.16.85.177
+Active hazelcast cluster members - 172.16.85.175,172.16.85.177
 
 `http://localhost:8080/hazelcast`
 
 
 **Instructions to reproduce eventbus clustering issue**
+
 1. Spin up 2 nodes in cluster. 
 
 Lets take two nodes with address 172.16.85.175 and 172.16.85.177
@@ -58,7 +59,7 @@ Members {size:2, ver:2} [
         Member [172.16.85.175]:5701 - 4bff302c-a084-4176-af6f-bcb09edf9266
 ]
  
-Now, when you hit endpoint _http://localhost:8080/hazelcast_ on any node, the response should have "172.16.85.175,172.16.85.177".
+Access endpoint _http://localhost:8080/hazelcast_ on any node, the response should have "172.16.85.175,172.16.85.177".
  
 Log statement ---> "Active hazelcast cluster members - 172.16.85.175,172.16.85.177"
 
@@ -72,9 +73,9 @@ Log statement on node 172.16.85.177,
 Log statement on node 172.16.85.175,
 "Received on host:: 172.16.85.175 ---> Hello from host:: 172.16.85.177"
 
-4. Now suspend network one of the nodes. 
+4. Now suspend network on one of the nodes. 
 
-We suspend network on node 172.16.85.175. 
+Suspend network on node 172.16.85.175. 
 
 Expected behavior on node 172.16.85.177:
 
@@ -94,7 +95,7 @@ Nothing on node 172.16.85.175
 
 5. Resume network on the suspended node. 
 
-We resume network on node 172.16.85.175.
+Resume network on node 172.16.85.175.
 
 Logs on both nodes, 
 Members {size:2, ver:6} [
