@@ -37,7 +37,7 @@ Received on host:: 172.16.85.177 ---> Hello from host:: 172.16.85.177
 _Hazelcast endpoint:_ Retrieves all the active hazelcast cluster members.
 
 For instance, 
-Retrieving cluster members 172.16.85.175,172.16.85.177
+Active hazelcast cluster members - 172.16.85.175,172.16.85.177
 
 `http://localhost:8080/hazelcast`
 
@@ -74,7 +74,7 @@ Log statement on node 172.16.85.175,
 
 4. Now suspend network one of the nodes. 
 
-We suspend network on node 172.16.85.175. 
+Suspend network on node 172.16.85.175. 
 
 Expected behavior on node 172.16.85.177:
 
@@ -94,7 +94,7 @@ Nothing on node 172.16.85.175
 
 5. Resume network on the suspended node. 
 
-We resume network on node 172.16.85.175.
+Resume network on node 172.16.85.175.
 
 Logs on both nodes, 
 Members {size:2, ver:6} [
