@@ -36,6 +36,7 @@ public class AppStarter {
     private static final String CACHE_MAP_NAME = "myMap";
     private static final String CLUSTER_MEMBERS = "cluster.members";
     private static List<String> clusterMembers;
+    private static VertxOptions vertxOptions;
 
     public static void main(final String... args) {
         require(isNotEmpty(getProperty(CLUSTER_MEMBERS)), "Please provides comma separated cluster members\"-Dcluster.members=members\".");
@@ -43,13 +44,13 @@ public class AppStarter {
         clusterMembers = Arrays.asList(members.split(","));
         final String host = getDefaultAddress();
         HazelcastClusterManager clusterManager = getClusterManager();
-        VertxOptions options = new VertxOptions()
+        vertxOptions = new VertxOptions()
                 .setClusterManager(clusterManager)
                 .setClustered(true)
                 .setClusterHost(host)
                 .setClusterPort(41232);
 
-        Vertx.rxClusteredVertx(options).subscribe(vertx -> {
+        Vertx.rxClusteredVertx(vertxOptions).subscribe(vertx -> {
             HazelcastInstance hazelcastInstance = clusterManager.getHazelcastInstance();
             require(hazelcastInstance != null, "Hazelcast did not start!");
             startHttpServer(vertx, host);
@@ -90,6 +91,35 @@ public class AppStarter {
                     .response()
                     .setChunked(true)
                     .write(nodesInCluster)
+                    .end();
+        });
+
+        // Gets all the active cluster members.
+        router.get("/vertx").handler(context -> {
+            final String nodesInCluster = vertxOptions.getClusterManager().getNodes()
+                    .stream()
+                    .collect(Collectors.joining(","));
+
+            System.out.println("Active vertx cluster members - " + nodesInCluster);
+            context
+                    .response()
+                    .setChunked(true)
+                    .write(nodesInCluster)
+                    .end();
+        });
+
+        // Gets all the active cluster members.
+        router.get("/nodeId").handler(context -> {
+            final String nodeIdResponse = new StringBuilder()
+                    .append("Host: ").append(getHazelcastInstance().getLocalEndpoint().getSocketAddress().toString())
+                    .append("\nVertx Node Id: ").append(vertxOptions.getClusterManager().getNodeID())
+                    .append("\nHazelCast Node Id: ").append(getHazelcastInstance().getLocalEndpoint().getUuid()).toString();
+            System.out.println("Node UUID Response - \n" + nodeIdResponse);
+
+            context
+                    .response()
+                    .setChunked(true)
+                    .write(nodeIdResponse)
                     .end();
         });
 

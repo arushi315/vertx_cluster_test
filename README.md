@@ -26,7 +26,7 @@ Vertx Eventbus Port: 41232
 
 **Endpoints**
 
-_Publish endpoint:_ Demo of publishing message on vertx event-bus. 
+_GET - Publish endpoint:_ Demo of publishing message on vertx event-bus. 
 All the cluster members will have a consumer on that address and will log a statement depicting that the message is received. 
 
 For instance, 
@@ -34,12 +34,20 @@ Received on host:: 172.16.85.177 ---> Hello from host:: 172.16.85.177
 
 `http://localhost:8080/publish`
 
-_Hazelcast endpoint:_ Retrieves all the active hazelcast cluster members.
+_GET - Hazelcast endpoint:_ Retrieves all the active hazelcast cluster members.
 
 For instance, 
 Active hazelcast cluster members - 172.16.85.175,172.16.85.177
 
 `http://localhost:8080/hazelcast`
+
+
+_GET - NodeId endpoint:_ Retrieves member nodeId from hazelcast instance and vertx cluster manager.
+
+For instance, 
+Active hazelcast cluster members - 172.16.85.175,172.16.85.177
+
+`http://localhost:8080/nodeId`
 
 
 **Instructions to reproduce eventbus clustering issue**
