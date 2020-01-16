@@ -78,41 +78,23 @@ public class AppHttpServer {
         });
 
         // Gets all the active cluster members.
-        router.get("/hazelcast").handler(context -> {
+        router.get("/nodeInfo").handler(context -> {
             final String nodesInCluster = getHazelCastClusterMembers()
                     .stream()
                     .map(member -> member.getSocketAddress().getAddress().getHostAddress())
                     .collect(Collectors.joining(","));
-            System.out.println("Active hazelcast cluster members - " + nodesInCluster);
 
-            context
-                    .response()
-                    .setChunked(true)
-                    .write(nodesInCluster)
-                    .end();
-        });
-
-        // Gets all the active cluster members.
-        router.get("/vertx").handler(context -> {
-            final String nodesInCluster = vertxOptions.getClusterManager().getNodes()
+            final String vertxNodes = vertxOptions.getClusterManager().getNodes()
                     .stream()
                     .collect(Collectors.joining(","));
 
-            System.out.println("Active vertx cluster members - " + nodesInCluster);
-            context
-                    .response()
-                    .setChunked(true)
-                    .write(nodesInCluster)
-                    .end();
-        });
-
-        // Gets all the active cluster members.
-        router.get("/nodeId").handler(context -> {
             final String nodeIdResponse = new StringBuilder()
                     .append("Host: ").append(hazelcastInstance.getLocalEndpoint().getSocketAddress().toString())
                     .append("\nVertx Node Id: ").append(vertxOptions.getClusterManager().getNodeID())
-                    .append("\nHazelCast Node Id: ").append(hazelcastInstance.getLocalEndpoint().getUuid()).toString();
-            System.out.println("Node UUID Response - \n" + nodeIdResponse);
+                    .append("\nHazelCast Node Id: ").append(hazelcastInstance.getLocalEndpoint().getUuid())
+                    .append("\nActive hazelCast cluster Nodes: ").append(nodesInCluster)
+                    .append("\nActive Vertx cluster Nodes: ").append(vertxNodes).toString();
+            System.out.println("Node Response - \n" + nodeIdResponse);
 
             context
                     .response()
