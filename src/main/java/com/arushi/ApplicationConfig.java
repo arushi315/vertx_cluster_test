@@ -25,7 +25,22 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Configuration
 public class ApplicationConfig {
+    // WARNING - These constants are used as system properties for Hazelcast, don't change the value.
+    public static final String HAZELCAST_SOCKET_CONNECT_TIMEOUT_SECONDS = "hazelcast.socket.connect.timeout.seconds";
+    public static final String HAZELCAST_OPERATION_CALL_TIMEOUT_MILLIS = "hazelcast.operation.call.timeout.millis";
+    public static final String HAZELCAST_IO_INPUT_THREAD_COUNT = "hazelcast.io.input.thread.count";
+    public static final String HAZELCAST_IO_OUTPUT_THREAD_COUNT = "hazelcast.io.output.thread.count";
     private static final String CACHE_MAP_NAME = "myMap";
+    // Zero means "infinite". If it's not zero then Hazelcast will try to join the cluster
+    // within that time, else it will never join. So, be careful when you change it from Zero.
+    @Value("${hazelcast.socket.connect.timeout.seconds:0}")
+    private String socketConnectTimeout;
+    @Value("${hazelcast.operation.call.timeout.millis:8000}")
+    private String operationCallTimeoutMillis;
+    @Value("${hazelcast.io.input.thread.count:3}")
+    private String ioInputThreadCount;
+    @Value("${hazelcast.io.output.thread.count:5}")
+    private String ioOutputThreadCount;
     @Value("#{'${cluster.members}'.split(',')}")
     private List<String> clusterMembers;
 
@@ -53,6 +68,14 @@ public class ApplicationConfig {
                         .setPortAutoIncrement(false)
                         .setJoin(createJoinConfig()));
         config.getMapConfigs().put(CACHE_MAP_NAME, createMapConfig(CACHE_MAP_NAME));
+        config.getGroupConfig().setName("TEST-3_8_4");
+        config.setProperty(HAZELCAST_SOCKET_CONNECT_TIMEOUT_SECONDS, socketConnectTimeout);
+        config.setProperty(HAZELCAST_OPERATION_CALL_TIMEOUT_MILLIS, operationCallTimeoutMillis);
+
+        // Set threads count. See http://docs.hazelcast.org/docs/latest-development/manual/html/Performance/Threading_Model/I:O_Threading.html
+        config.setProperty(HAZELCAST_IO_INPUT_THREAD_COUNT, ioInputThreadCount);
+        config.setProperty(HAZELCAST_IO_OUTPUT_THREAD_COUNT, ioOutputThreadCount);
+
         clusterManager.setConfig(config);
         return clusterManager;
     }
