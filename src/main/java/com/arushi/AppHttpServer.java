@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,7 @@ import rx.Subscriber;
 
 @Component
 public class AppHttpServer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppHttpServer.class);
     private static HttpServer httpServer;
     @Autowired
     private Vertx vertx;
@@ -43,10 +46,10 @@ public class AppHttpServer {
         try {
             contextRunner.executeBlocking(vertxOptions.getEventLoopPoolSize(),
                     () -> startHttpServer(host)
-                            .doOnError(e -> System.out.println("Error while launching HTTP Server."))
+                            .doOnError(e -> LOGGER.info("Error while launching HTTP Server."))
                             .buffer(2), 1, TimeUnit.MINUTES);
         } catch (final InterruptedException | ExecutionException | TimeoutException e) {
-            System.out.println("Error while starting up the application." + e);
+            LOGGER.info("Error while starting up the application." + e);
         }
 
         // WITHOUT CONTEXT RUNNER: 
@@ -55,7 +58,7 @@ public class AppHttpServer {
         registerVertxEventBusHandler(host);
     }
 
-    //    private void startHttpServer(final String currentHost) {
+    //        private void startHttpServer(final String currentHost) {
     private Observable<HttpServer> startHttpServer(final String currentHost) {
         final Router router = Router.router(vertx);
         // Failure handler.
@@ -94,7 +97,7 @@ public class AppHttpServer {
                     .append("\nHazelCast Node Id: ").append(hazelcastInstance.getLocalEndpoint().getUuid())
                     .append("\nActive hazelCast cluster Nodes: ").append(nodesInCluster)
                     .append("\nActive Vertx cluster Nodes: ").append(vertxNodes).toString();
-            System.out.println("Node Response - \n" + nodeIdResponse);
+            LOGGER.info("Node Response - \n" + nodeIdResponse);
 
             context
                     .response()
@@ -123,7 +126,11 @@ public class AppHttpServer {
 
     private void registerVertxEventBusHandler(final String host) {
         vertx.eventBus().consumer("someHandler", message -> {
-            System.out.println("Received on host:: " + host + " ---> Hello from " + message.body());
+            LOGGER.info("Received on host:: " + host + " ---> Hello from " + message.body());
+        });
+
+        vertx.eventBus().consumer("partitionLost", message -> {
+            LOGGER.info("Received Partition lost on host:: " + host + " from host::  " + message.body());
         });
     }
 
@@ -135,7 +142,7 @@ public class AppHttpServer {
         return vertx.createHttpServer(options)
                 .requestHandler(request -> router.accept(request))
                 .listenObservable()
-                .doOnCompleted(() -> System.out.println("Listening on localhost:8080"))
-                .doOnError(e -> System.out.println("Unable to listen on localhost:8080"));
+                .doOnCompleted(() -> LOGGER.info("Listening on localhost:8080"))
+                .doOnError(e -> LOGGER.info("Unable to listen on localhost:8080"));
     }
 }

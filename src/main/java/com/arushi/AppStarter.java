@@ -22,6 +22,18 @@ public class AppStarter {
 //        clusterMembers = Arrays.asList(members.split(","));
 //        Vertx.rxClusteredVertx(vertxOptions).subscribe(vertx -> {
 //            }, Throwable::printStackTrace);
+
+//        final LoggerContext context = (LoggerContext)LoggerFactory.getILoggerFactory();
+//        final JoranConfigurator configurator = new JoranConfigurator();
+//        configurator.setContext(context);
+//        // Tell Spring to use this logging config.
+        System.setProperty("logging.config", "logback.xml");
+//        try {
+//            configurator.doConfigure("logback.xml");
+//        } catch (JoranException e) {
+//            //Nothing
+//        }
+        io.vertx.core.logging.LoggerFactory.getLogger(io.vertx.core.logging.LoggerFactory.class);
         final SpringApplication application = new SpringApplication(AppStarter.class);
         application.setBannerMode(Banner.Mode.LOG);
         application.run(args);

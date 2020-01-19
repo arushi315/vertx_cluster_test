@@ -2,19 +2,14 @@ package com.arushi;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.EvictionPolicy;
-import com.hazelcast.config.InMemoryFormat;
-import com.hazelcast.config.JoinConfig;
-import com.hazelcast.config.MapConfig;
-import com.hazelcast.config.MaxSizeConfig;
-import com.hazelcast.config.MulticastConfig;
-import com.hazelcast.config.NetworkConfig;
-import com.hazelcast.config.TcpIpConfig;
+import com.hazelcast.config.*;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -30,6 +25,7 @@ public class ApplicationConfig {
     public static final String HAZELCAST_OPERATION_CALL_TIMEOUT_MILLIS = "hazelcast.operation.call.timeout.millis";
     public static final String HAZELCAST_IO_INPUT_THREAD_COUNT = "hazelcast.io.input.thread.count";
     public static final String HAZELCAST_IO_OUTPUT_THREAD_COUNT = "hazelcast.io.output.thread.count";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
     private static final String CACHE_MAP_NAME = "myMap";
     // Zero means "infinite". If it's not zero then Hazelcast will try to join the cluster
     // within that time, else it will never join. So, be careful when you change it from Zero.
@@ -43,6 +39,9 @@ public class ApplicationConfig {
     private String ioOutputThreadCount;
     @Value("#{'${cluster.members}'.split(',')}")
     private List<String> clusterMembers;
+
+    @Autowired
+    private HazelcastPartitionLostListener hazelcastPartitionLostListener;
 
     @Bean
     public EventBusOptions createEventBusOptions() {
@@ -75,6 +74,7 @@ public class ApplicationConfig {
         // Set threads count. See http://docs.hazelcast.org/docs/latest-development/manual/html/Performance/Threading_Model/I:O_Threading.html
         config.setProperty(HAZELCAST_IO_INPUT_THREAD_COUNT, ioInputThreadCount);
         config.setProperty(HAZELCAST_IO_OUTPUT_THREAD_COUNT, ioOutputThreadCount);
+        config.addListenerConfig(new ListenerConfig(hazelcastPartitionLostListener));
 
         clusterManager.setConfig(config);
         return clusterManager;
@@ -101,7 +101,7 @@ public class ApplicationConfig {
         if (!clusterMembers.isEmpty()) {
             clusterMembers.forEach(member -> {
                 if (isNotEmpty(member)) {
-                    System.out.println("Adding member " + member + " to hazelcast config.");
+                    LOGGER.info("Adding member " + member + " to hazelcast config.");
                     tcpipConfig.addMember(member.trim());
                 }
             });

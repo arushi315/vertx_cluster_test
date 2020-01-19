@@ -1,0 +1,47 @@
+<!--
+  ~ /*
+  ~  * Copyright © 2014 AirWatch, LLC. All rights reserved.
+  ~  * This product is protected by copyright and intellectual property laws
+  ~  * in the United States and other countries as well as by international treaties.
+  ~  * AirWatch products may be covered by one or more patents listed at
+  ~  * http://www.vmware.com/go/patents.
+  ~  */
+  -->
+
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d ${HOSTNAME} %p \(%t\) [%c{5}] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="APP_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <file>log/app.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ${HOSTNAME} %p \(%t\) [%c{5}] - %m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>log/app.log.%i</fileNamePattern>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>35MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <appender name="APP_LOG_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="APP_LOG"/>
+    </appender>
+
+    <logger name="com.arushi" level="debug"/>
+    <logger name="com.hazelcast" level="debug"/>
+    <logger name="io.vertx.core.net.impl.ConnectionBase" level="error"/>
+    <logger name="io.vertx" level="debug"/>
+
+    <root level="debug">
+        <appender-ref ref="APP_LOG_ASYNC"/>
+    </root>
+
+</configuration>
