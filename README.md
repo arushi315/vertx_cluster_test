@@ -15,6 +15,11 @@ For instance, java -jar -Dcluster.members=172.16.85.177,172.16.85.175 vertx-clus
 
 java -jar -Dcluster.members=172.16.66.175,172.16.86.240 vertx-cluster-test.jar
 java -jar -Dcluster.members=172.16.66.175,securemail02.AWSS.DEV,172.16.89.61 -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -Dhazelcast.logging.type=slf4j  vertx-cluster-test-1.0-SNAPSHOT-fat.jar
+java -jar -Dcluster.members=172.16.84.186,172.16.78.216,172.16.84.157 -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -Dhazelcast.logging.type=slf4j  vertx-cluster-test-1.0-SNAPSHOT-fat.jar
+
+
+Enable remote debug
+java -jar -Dcluster.members=172.16.84.186,172.16.78.216,172.16.84.157 -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -Dhazelcast.logging.type=slf4j -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=50000  vertx-cluster-test-1.0-SNAPSHOT-fat.jar
 
 Default configuration: 
 
